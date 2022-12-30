@@ -30,8 +30,6 @@ public class FetchLastActiveQuestionsUseCaseTest {
     // endregion constants -------------------------------------------------------------------------
 
     // region helper fields ------------------------------------------------------------------------
-    /*this is a test double, I use it to simulate the behavior of the FetchLastActiveQuestionEndPoint,the whole
-    class can be found at the end*/
     private EndpointTd mEndpointTd;
     //I use Mokito to create two mock objects of listener to get the notification from FetchLastActiveQuestionUseCase
     @Mock FetchLastActiveQuestionsUseCase.Listener mListener1;
@@ -49,43 +47,34 @@ public class FetchLastActiveQuestionsUseCaseTest {
         SUT = new FetchLastActiveQuestionsUseCase(mEndpointTd);
     }
 
-    /*test if the method fetchLastActiveQuestionAndNotify is called and the questions are fetched successfully,
-     the listeners will be notified with the correct questions*/
     @Test
     public void fetchLastActiveQuestionsAndNotify_success_listenersNotifiedWithCorrectData() throws Exception {
         // Arrange
-        //if questions are fetched successfully
         success();
         SUT.registerListener(mListener1);
         SUT.registerListener(mListener2);
-        // Act, called method fetchLastActiveQuestionAndNotify()
         SUT.fetchLastActiveQuestionsAndNotify();
         // Assert
-        //check if the listeners get notified with the corrects questions.
         verify(mListener1).onLastActiveQuestionsFetched(mQuestionsCaptor.capture());
         verify(mListener2).onLastActiveQuestionsFetched(mQuestionsCaptor.capture());
         List<List<Question>> questionLists = mQuestionsCaptor.getAllValues();
-        //check if the questions fetched from EndPoint are correct
         assertThat(questionLists.get(0), is(QUESTIONS));
         assertThat(questionLists.get(1), is(QUESTIONS));
     }
 
-    /*test if the method fetchLastActiveQuestionAndNotify is called and the questions are not fetched,
- the listeners will be notified with failure*/
-    @Test
-    public void fetchLastActiveQuestionsAndNotify_failure_listenersNotifiedOfFailure() throws Exception {
-        // Arrange
-        //if questions are not fetched
-        failure();
-        SUT.registerListener(mListener1);
-        SUT.registerListener(mListener2);
-        // Act, called method fetchLastActiveQuestionAndNotify()
-        SUT.fetchLastActiveQuestionsAndNotify();
-        // Assert
-        //check if the listeners get notified of failure
-        verify(mListener1).onLastActiveQuestionsFetchFailed();
-        verify(mListener2).onLastActiveQuestionsFetchFailed();
-    }
+//    @Test
+//    public void fetchLastActiveQuestionsAndNotify_failure_listenersNotifiedOfFailure() throws Exception {
+//        // Arrange
+//        //if questions are not fetched
+//        failure();
+//        SUT.registerListener(mListener1);
+//        SUT.registerListener(mListener2);
+//        // Act, called method fetchLastActiveQuestionAndNotify()
+//        SUT.fetchLastActiveQuestionsAndNotify();
+//        // Assert
+//        verify(mListener1).onLastActiveQuestionsFetchFailed();
+//        verify(mListener2).onLastActiveQuestionsFetchFailed();
+//    }
 
     // region helper methods -----------------------------------------------------------------------
 
@@ -100,8 +89,7 @@ public class FetchLastActiveQuestionsUseCaseTest {
     // endregion helper methods --------------------------------------------------------------------
 
     // region helper classes -----------------------------------------------------------------------
-    /*I define the behavior of the test double, if mFailure is true, which means questions are not fetched,
-     the listeners are notified of failure; if mFailure is false, a list of questions will be passed to listeners*/
+
     private static class EndpointTd extends FetchLastActiveQuestionsEndpoint {
 
         public boolean mFailure;
